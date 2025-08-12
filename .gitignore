@@ -27,5 +27,4 @@ dist-ssr
 
 .env
 
-
-temp/
+src/temp/
