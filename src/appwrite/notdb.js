@@ -37,7 +37,7 @@ export class Service{
     async updatePost(slug, {title, content, featuredImage, status}){
         try {
             return await this.databases.updateDocument(
-                config.AppWriteProjectId,
+                config.AppWriteDatabaseId,
                 config.AppWriteCollectionId,
                 slug,
                 {
@@ -56,10 +56,9 @@ export class Service{
     async deletePost(slug){
         try {
             await this.databases.deleteDocument(
-                config.AppWriteProjectId,
+                config.AppWriteDatabaseId,
                 config.AppWriteCollectionId,
                 slug
-            
             )
             return true
         } catch (error) {
@@ -74,7 +73,6 @@ export class Service{
                 config.AppWriteDatabaseId,
                 config.AppWriteCollectionId,
                 slug
-            
             )
         } catch (error) {
             console.log("Appwrite serive :: getPost :: error", error);
@@ -88,8 +86,6 @@ export class Service{
                 config.AppWriteDatabaseId,
                 config.AppWriteCollectionId,
                 queries,
-                
-
             )
         } catch (error) {
             console.log("Appwrite serive :: getPosts :: error", error);
