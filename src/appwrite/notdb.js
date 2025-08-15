@@ -19,7 +19,7 @@ export class Service{
             return await this.databases.createDocument(
                 config.AppWriteDatabaseId,
                 config.AppWriteCollectionId,
-                slug,
+                ID.unique(),
                 {
                     title,
                     content,
