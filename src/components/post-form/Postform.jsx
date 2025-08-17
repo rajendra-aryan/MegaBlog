@@ -4,6 +4,7 @@ import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/notdb";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import authService from "../../appwrite/auth";
 
 export default function PostForm({ post }) {
     const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
@@ -19,6 +20,14 @@ export default function PostForm({ post }) {
     const userData = useSelector((state) => state.auth.userData);
 
     const submit = async (data) => {
+
+        // const userID = userData?.$id || (await authService.getCurrentUser())?.$id;
+
+        // if(!userID){
+        //     alert ("You must be logged in to create a post.")
+        //     return
+        // }
+
         if (post) {
             const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
 
