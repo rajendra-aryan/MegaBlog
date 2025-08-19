@@ -41,9 +41,9 @@ function Header() {
 
 
   return (
-    <header className='py-3 shadow bg-gray-500'>
+    <header className='py-4 bg-white/80 backdrop-blur border-b border-gray-200'>
       <Container>
-        <nav className='flex'>
+        <nav className='flex items-center'>
           <div className='mr-4'>
             <Link to='/'>
               <Logo width='70px'   />
@@ -56,7 +56,7 @@ function Header() {
               <li key={item.name}>
                 <button
                 onClick={() => navigate(item.slug)}
-                className='inline-block px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
+                className='inline-block px-4 py-2 text-sm duration-200 hover:bg-gray-100 rounded-lg'
                 >{item.name}</button>
               </li>
             ) : null
@@ -64,7 +64,7 @@ function Header() {
             <li>
               <button
                 onClick={() => dispatch(setTheme(theme === 'light' ? 'dark' : 'light'))}
-                className='inline-block px-4 py-2 duration-200 hover:bg-blue-100 rounded-full'
+                className='inline-block px-3 py-2 text-sm duration-200 hover:bg-gray-100 rounded-lg'
                 aria-label='Toggle theme'
               >{theme === 'light' ? 'Dark' : 'Light'}</button>
             </li>

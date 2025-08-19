@@ -24,7 +24,7 @@ function App() {
   }, [dispatch])
   
   return !loading ? (
-    <div className={`min-h-screen flex flex-wrap content-between ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-400'}`}>
+    <div className={`min-h-screen flex flex-wrap content-between ${theme === 'dark' ? 'bg-gray-950 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       <div className='w-full block'>
         <Header />
         <Toaster />
