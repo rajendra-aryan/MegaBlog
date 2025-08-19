@@ -5,6 +5,7 @@ import appwriteService from "../../appwrite/notdb";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addToast } from "../../store/notificationsSlice";
+import { addPost as addPostToStore, updatePost as updatePostInStore } from "../../store/postsSlice";
 import { setDraftField, resetDraft, loadDraft } from "../../store/editorDraftSlice";
 import authService from "../../appwrite/auth";
 
@@ -33,7 +34,7 @@ export default function PostForm({ post }) {
         // }
 
         if (post) {
-            const file = data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
+            const file = data.image && data.image[0] ? await appwriteService.uploadFile(data.image[0]) : null;
 
             if (file) {
                 appwriteService.deleteFile(post.featuredImage);
@@ -45,6 +46,8 @@ export default function PostForm({ post }) {
             });
 
             if (dbPost) {
+                dispatch(updatePostInStore(dbPost));
+                dispatch(addToast({ type: "success", message: "Post updated" }));
                 navigate(`/post/${dbPost.$id}`);
             }
         } else {
@@ -56,6 +59,7 @@ export default function PostForm({ post }) {
                 const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
 
                 if (dbPost) {
+                    dispatch(addPostToStore(dbPost));
                     dispatch(addToast({ type: "success", message: "Post created successfully" }));
                     dispatch(resetDraft());
                     navigate(`/post/${dbPost.$id}`);

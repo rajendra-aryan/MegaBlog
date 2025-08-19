@@ -3,12 +3,15 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import appwriteService from "../appwrite/notdb";
 import { Button, Container } from "../components";
 import parse from "html-react-parser";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { removePost, addPost } from "../store/postsSlice";
+import { addToast } from "../store/notificationsSlice";
 
 export default function Post() {
     const [post, setPost] = useState(null);
     const { slug } = useParams();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const userData = useSelector((state) => state.auth.userData);
 
@@ -17,16 +20,21 @@ export default function Post() {
     useEffect(() => {
         if (slug) {
             appwriteService.getPost(slug).then((post) => {
-                if (post) setPost(post);
+                if (post) {
+                    setPost(post);
+                    dispatch(addPost(post));
+                }
                 else navigate("/");
             });
         } else navigate("/");
-    }, [slug, navigate]);
+    }, [slug, navigate, dispatch]);
 
     const deletePost = () => {
         appwriteService.deletePost(post.$id).then((status) => {
             if (status) {
                 appwriteService.deleteFile(post.featuredImage);
+                dispatch(removePost(post.$id));
+                dispatch(addToast({ type: "success", message: "Post deleted" }));
                 navigate("/");
             }
         });
