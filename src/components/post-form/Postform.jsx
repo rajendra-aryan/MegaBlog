@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import { Button, Input, RTE, Select } from "..";
 import appwriteService from "../../appwrite/notdb";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addToast } from "../../store/notificationsSlice";
+import { setDraftField, resetDraft, loadDraft } from "../../store/editorDraftSlice";
 import authService from "../../appwrite/auth";
 
 export default function PostForm({ post }) {
@@ -17,6 +19,8 @@ export default function PostForm({ post }) {
     });
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const draft = useSelector((state) => state.editorDraft);
     const userData = useSelector((state) => state.auth.userData);
 
     const submit = async (data) => {
@@ -52,6 +56,8 @@ export default function PostForm({ post }) {
                 const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
 
                 if (dbPost) {
+                    dispatch(addToast({ type: "success", message: "Post created successfully" }));
+                    dispatch(resetDraft());
                     navigate(`/post/${dbPost.$id}`);
                 }
             }
@@ -74,14 +80,30 @@ export default function PostForm({ post }) {
             if (name === "title") {
                 setValue("slug", slugTransform(value.title), { shouldValidate: true });
             }
+            if (name && Object.prototype.hasOwnProperty.call(value, name)) {
+                const nextValue = value[name];
+                if (name === "content") {
+                    dispatch(setDraftField({ field: "content", value: nextValue }));
+                }
+            }
         });
 
         return () => subscription.unsubscribe();
-    }, [watch, slugTransform, setValue]);
+    }, [watch, slugTransform, setValue, dispatch]);
+
+    React.useEffect(() => {
+        if (!post && draft) {
+            if (draft.title) setValue("title", draft.title);
+            if (draft.slug) setValue("slug", draft.slug);
+            if (draft.content) setValue("content", draft.content);
+            if (draft.status) setValue("status", draft.status);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onInvalid = (errors) => {
         if (errors.image) {
-            alert("Featured image is required");
+            dispatch(addToast({ type: "warning", message: "Featured image is required" }));
         }
     };
 
@@ -93,6 +115,7 @@ export default function PostForm({ post }) {
                     placeholder="Title"
                     className="mb-4"
                     {...register("title", { required: true })}
+                    onChange={(e) => dispatch(setDraftField({ field: "title", value: e.target.value }))}
                 />
                 <Input
                     label="Slug :"
@@ -101,6 +124,7 @@ export default function PostForm({ post }) {
                     {...register("slug", { required: true })}
                     onInput={(e) => {
                         setValue("slug", slugTransform(e.currentTarget.value), { shouldValidate: true });
+                        dispatch(setDraftField({ field: "slug", value: slugTransform(e.currentTarget.value) }));
                     }}
                 />
                 <RTE label="Content :" name="content" control={control} defaultValue={getValues("content")} />
@@ -127,6 +151,7 @@ export default function PostForm({ post }) {
                     label="Status"
                     className="mb-4"
                     {...register("status", { required: true })}
+                    onChange={(e) => dispatch(setDraftField({ field: "status", value: e.target.value }))}
                 />
                 <Button type="submit" bgColor={post ? "bg-green-500" : undefined} className="w-full">
                     {post ? "Update" : "Submit"}
