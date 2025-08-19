@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import appwriteService from "../appwrite/notdb";
 import { Button, Container } from "../components";
+import Comments from "../sections/Comments";
 import parse from "html-react-parser";
 import { useDispatch, useSelector } from "react-redux";
 import { removePost, addPost } from "../store/postsSlice";
@@ -72,4 +73,16 @@ export default function Post() {
             </Container>
         </div>
     ) : null;
+    
+    // Comments section below the content
+    return (
+        post ? (
+            <div className="py-8">
+                <Container>
+                    {/* existing post view above */}
+                </Container>
+                <Comments postId={post.$id} />
+            </div>
+        ) : null
+    )
 }

@@ -5,6 +5,8 @@ import notificationsSlice from './notificationsSlice';
 import editorDraftSlice from './editorDraftSlice';
 import uploadSlice from './uploadSlice';
 import settingsSlice from './settingsSlice';
+import filtersSlice from './filtersSlice';
+import commentsSlice from './commentsSlice';
 
 const store = configureStore({
     reducer: {
@@ -14,6 +16,8 @@ const store = configureStore({
         editorDraft: editorDraftSlice,
         upload: uploadSlice,
         settings: settingsSlice,
+        filters: filtersSlice,
+        comments: commentsSlice,
     }
 });
 

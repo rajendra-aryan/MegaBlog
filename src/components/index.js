@@ -14,6 +14,7 @@ import Input from "./Input"
 import Select from "./Select"
 import Toaster from "./Toaster"
 import Loader from "./Loader"
+import SearchBar from "./SearchBar"
 
 export {
     Header,
@@ -32,4 +33,5 @@ export {
     Input,
     Toaster,
     Loader,
+    SearchBar,
 }
