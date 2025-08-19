@@ -26,6 +26,15 @@ const postsSlice = createSlice({
                 state.allIds.push(post.$id);
             }
         },
+        appendPosts(state, action) {
+            const posts = Array.isArray(action.payload) ? action.payload : [];
+            for (const post of posts) {
+                if (!state.byId[post.$id]) {
+                    state.allIds.push(post.$id);
+                }
+                state.byId[post.$id] = post;
+            }
+        },
         addPost(state, action) {
             const post = action.payload;
             if (!post || !post.$id) return;
@@ -62,6 +71,7 @@ export const {
     setLoading,
     setError,
     setPosts,
+    appendPosts,
     addPost,
     updatePost,
     removePost,

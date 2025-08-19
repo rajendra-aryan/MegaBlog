@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addToast } from '../store/notificationsSlice'
 import { setComments, addComment, setLoading, setError } from '../store/commentsSlice'
 import commentsService from '../appwrite/comments'
+import config from '../config/config'
 
 export default function Comments({ postId }){
     const dispatch = useDispatch()
@@ -13,6 +14,10 @@ export default function Comments({ postId }){
 
     useEffect(() => {
         let mounted = true
+        if (!config.AppWriteCommentsCollectionId) {
+            dispatch(setLoading({ postId, isLoading: false }))
+            return
+        }
         dispatch(setLoading({ postId, isLoading: true }))
         commentsService.listComments(postId, { limit: 10 })
             .then((res) => { if (mounted) dispatch(setComments({ postId, comments: res?.documents || [] })) })
@@ -28,6 +33,10 @@ export default function Comments({ postId }){
             return
         }
         if (!text.trim()) return
+        if (!config.AppWriteCommentsCollectionId) {
+            dispatch(addToast({ type: 'warning', message: 'Comments backend not configured yet' }))
+            return
+        }
         const created = await commentsService.createComment({ postId, text: text.trim(), authorId: user.$id, authorName: user.name })
         dispatch(addComment({ postId, comment: created }))
         setText("")

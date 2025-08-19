@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setSearchTerm, setCategory } from '../store/filtersSlice'
+import { setSearchTerm, setCategory, setTags } from '../store/filtersSlice'
+import TagsInput from './TagsInput'
 
 const CATEGORIES = ["", "Tech", "Lifestyle", "News", "Tutorials"]
 
@@ -25,6 +26,13 @@ export default function SearchBar(){
                     <option key={c} value={c}>{c === '' ? 'All Categories' : c}</option>
                 ))}
             </select>
+            <div className='min-w-[240px] flex-1'>
+                <TagsInput
+                    value={useSelector((s) => s.filters.tags)}
+                    onChange={(tags) => dispatch(setTags(tags))}
+                    placeholder='Filter tags (press Enter)'
+                />
+            </div>
         </div>
     )
 }
