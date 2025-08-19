@@ -16,6 +16,8 @@ export default function PostForm({ post }) {
             slug: post?.$id || "",
             content: post?.content || "",
             status: post?.status || "active",
+            category: post?.category || "",
+            tags: post?.tags || [],
         },
     });
 
@@ -56,7 +58,13 @@ export default function PostForm({ post }) {
             if (file) {
                 const fileId = file.$id;
                 data.featuredImage = fileId;
-                const dbPost = await appwriteService.createPost({ ...data, userId: userData.$id });
+                // ensure tags is array of strings
+                const normalizedTags = Array.isArray(data.tags)
+                    ? data.tags
+                    : (typeof data.tags === 'string' && data.tags.trim() !== ''
+                        ? data.tags.split(',').map((t) => t.trim()).filter(Boolean)
+                        : []);
+                const dbPost = await appwriteService.createPost({ ...data, tags: normalizedTags, userId: userData.$id });
 
                 if (dbPost) {
                     dispatch(addPostToStore(dbPost));
@@ -140,6 +148,18 @@ export default function PostForm({ post }) {
                     className="mb-4"
                     accept="image/png, image/jpg, image/jpeg, image/gif"
                     {...register("image", { required: !post })}
+                />
+                <Input
+                    label="Category :"
+                    placeholder="e.g. Tech"
+                    className="mb-4"
+                    {...register("category")}
+                />
+                <Input
+                    label="Tags (comma separated) :"
+                    placeholder="e.g. react, hooks"
+                    className="mb-4"
+                    {...register("tags")}
                 />
                 {post && (
                     <div className="w-full mb-4">

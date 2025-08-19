@@ -1,25 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addToast } from '../store/notificationsSlice'
 import { setComments, addComment, setLoading, setError } from '../store/commentsSlice'
-
-// Placeholder local service until Appwrite collection for comments is added
-// You should replace these with Appwrite Databases documents calls
-const fakeApi = {
-    async list(postId){
-        const key = `comments:${postId}`
-        const raw = localStorage.getItem(key)
-        return raw ? JSON.parse(raw) : []
-    },
-    async create(postId, payload){
-        const key = `comments:${postId}`
-        const list = await this.list(postId)
-        const created = { id: String(Date.now()), createdAt: Date.now(), ...payload }
-        const next = [...list, created]
-        localStorage.setItem(key, JSON.stringify(next))
-        return created
-    }
-}
+import commentsService from '../appwrite/comments'
 
 export default function Comments({ postId }){
     const dispatch = useDispatch()
@@ -31,8 +14,8 @@ export default function Comments({ postId }){
     useEffect(() => {
         let mounted = true
         dispatch(setLoading({ postId, isLoading: true }))
-        fakeApi.list(postId)
-            .then((list) => { if (mounted) dispatch(setComments({ postId, comments: list })) })
+        commentsService.listComments(postId, { limit: 10 })
+            .then((res) => { if (mounted) dispatch(setComments({ postId, comments: res?.documents || [] })) })
             .catch((e) => dispatch(setError({ postId, error: e?.message || 'Failed to load comments' })))
             .finally(() => mounted && dispatch(setLoading({ postId, isLoading: false })))
         return () => { mounted = false }
@@ -45,7 +28,7 @@ export default function Comments({ postId }){
             return
         }
         if (!text.trim()) return
-        const created = await fakeApi.create(postId, { text: text.trim(), authorId: user.$id, authorName: user.name })
+        const created = await commentsService.createComment({ postId, text: text.trim(), authorId: user.$id, authorName: user.name })
         dispatch(addComment({ postId, comment: created }))
         setText("")
         dispatch(addToast({ type: 'success', message: 'Comment added' }))
