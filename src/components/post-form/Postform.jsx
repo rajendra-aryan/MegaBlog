@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { Button, Input, RTE, Select } from "..";
+import { Button, Input, RTE, Select, TagsInput } from "..";
 import appwriteService from "../../appwrite/notdb";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -155,12 +155,13 @@ export default function PostForm({ post }) {
                     className="mb-4"
                     {...register("category")}
                 />
-                <Input
-                    label="Tags (comma separated) :"
-                    placeholder="e.g. react, hooks"
-                    className="mb-4"
-                    {...register("tags")}
-                />
+                <div className="mb-4">
+                    <label className="inline-block mb-1 pl-1">Tags :</label>
+                    <TagsInput
+                        value={Array.isArray(getValues('tags')) ? getValues('tags') : []}
+                        onChange={(tags) => setValue('tags', tags, { shouldValidate: false })}
+                    />
+                </div>
                 {post && (
                     <div className="w-full mb-4">
                         <img
