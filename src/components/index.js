@@ -13,6 +13,7 @@ import Button from "./Button"
 import Input from "./Input"
 import Select from "./Select"
 import Toaster from "./Toaster"
+import Loader from "./Loader"
 
 export {
     Header,
@@ -30,4 +31,5 @@ export {
     Select,
     Input,
     Toaster,
+    Loader,
 }
