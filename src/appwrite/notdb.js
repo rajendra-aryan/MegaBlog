@@ -26,7 +26,9 @@ export class Service{
                     featuredImage,
                     status,
                     userId,
-                    slug
+                    slug,
+                    category,
+                    tags
                 }
             )
         } catch (error) {
@@ -34,7 +36,7 @@ export class Service{
         }
     }
 
-    async updatePost(slug, {title, content, featuredImage, status}){
+    async updatePost(slug, {title, content, featuredImage, status, category, tags}){
         try {
             return await this.databases.updateDocument(
                 config.AppWriteDatabaseId,
@@ -45,7 +47,8 @@ export class Service{
                     content,
                     featuredImage,
                     status,
-
+                    category,
+                    tags
                 }
             )
         } catch (error) {
@@ -81,13 +84,16 @@ export class Service{
         }
     }
 
-    async getPosts(queries = [Query.equal("status", "active")]){
+    async getPosts(queries = [Query.equal("status", "active")], {limit, cursor}={}){
         try {
-            return await this.databases.listDocuments(
+            const options =  await this.databases.listDocuments(
                 config.AppWriteDatabaseId,
                 config.AppWriteCollectionId,
                 queries,
             )
+            // Note: For robust pagination, adjust to use Query.limit/cursor in queries if your collection supports it.
+            return options
+            
         } catch (error) {
             console.log("Appwrite serive :: getPosts :: error", error);
             return false

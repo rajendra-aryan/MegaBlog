@@ -1,11 +1,14 @@
 import React from 'react'
 import {Container, Logo, LogoutBtn} from '../index'
 import { Link } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import {useDispatch ,useSelector} from 'react-redux'
+import { setTheme } from '../../store/settingsSlice'
 import { useNavigate } from 'react-router-dom'
 
 function Header() {
   const authStatus = useSelector((state) => state.auth.status)
+  const theme = useSelector((state) => state.settings.theme)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
   const navItems = [
@@ -38,26 +41,33 @@ function Header() {
 
 
   return (
-    <header className='py-3 shadow bg-gray-500'>
+    <header className='py-4 bg-white/80 backdrop-blur border-b border-gray-200'>
       <Container>
-        <nav className='flex'>
+        <nav className='flex items-center'>
           <div className='mr-4'>
             <Link to='/'>
               <Logo width='70px'   />
 
               </Link>
           </div>
-          <ul className='flex ml-auto'>
+          <ul className='flex ml-auto items-center gap-2'>
             {navItems.map((item) => 
             item.active ? (
               <li key={item.name}>
                 <button
                 onClick={() => navigate(item.slug)}
-                className='inline-block px-6 py-2 duration-200 hover:bg-blue-100 rounded-full'
+                className='inline-block px-4 py-2 text-sm duration-200 hover:bg-gray-100 rounded-lg'
                 >{item.name}</button>
               </li>
             ) : null
             )}
+            <li>
+              <button
+                onClick={() => dispatch(setTheme(theme === 'light' ? 'dark' : 'light'))}
+                className='inline-block px-3 py-2 text-sm duration-200 hover:bg-gray-100 rounded-lg'
+                aria-label='Toggle theme'
+              >{theme === 'light' ? 'Dark' : 'Light'}</button>
+            </li>
             {authStatus && (
               <li>
                 <LogoutBtn />
