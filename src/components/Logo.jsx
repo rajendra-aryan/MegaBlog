@@ -3,7 +3,7 @@ import React from 'react'
 export default function Logo({width="100px"}) {
   return (
     <div style={{width}}>
-      <img src="src\temp\ChatGPT Image Aug 12, 2025, 07_34_24 PM.png" alt="Logo" />
+      <img src="/ChatGPT Image Aug 12, 2025, 07_34_24 PM.png" alt="Logo" />
     </div>
   )
 }
