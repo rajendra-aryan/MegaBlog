@@ -16,6 +16,8 @@ import EditPost from "./pages/EditPost";
 import Post from "./pages/Post";
 
 import AllPosts from "./pages/AllPosts";
+import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -72,6 +74,18 @@ const router = createBrowserRouter([
         {
             path: "/post/:slug",
             element: <Post />,
+        },
+        {
+            path: "/profile",
+            element: (
+                <AuthLayout authentication>
+                    <Profile />
+                </AuthLayout>
+            ),
+        },
+        {
+            path: "*",
+            element: <NotFound />,
         },
     ],
 },

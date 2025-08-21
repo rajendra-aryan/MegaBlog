@@ -12,6 +12,10 @@ import AuthLayout from "./AuthLayout"
 import Button from "./Button"
 import Input from "./Input"
 import Select from "./Select"
+import Toaster from "./Toaster"
+import Loader from "./Loader"
+import SearchBar from "./SearchBar";
+import TagsInput from "./TagsInput"
 
 export {
     Header,
@@ -27,5 +31,9 @@ export {
     AuthLayout,
     Button,
     Select,
-    Input
+    Input,
+    Toaster,
+    Loader,
+    SearchBar,
+    TagsInput,
 }
